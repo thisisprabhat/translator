@@ -59,6 +59,8 @@ class TranslatorTextBox extends StatelessWidget {
                 onChanged: onChanged,
                 readOnly: readOnly,
                 decoration: InputDecoration(
+                  hintText: hintText ?? 'Enter your text here',
+                  hintStyle: const TextStyle(fontWeight: FontWeight.w400),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: colorScheme.outline),
                   ),

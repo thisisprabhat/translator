@@ -67,6 +67,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             TranslatorTextBox(
               title: "Translate from ",
               title2: '(English)',
+              hintText: 'Enter text to translate ...',
               controller: _sourceController,
               onClearTap: () {},
               onChanged: (val) {
@@ -77,6 +78,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             TranslatorTextBox(
               title: "Translate to ",
               title2: '(Germany)',
+              hintText: 'your translated text will appear here.',
               controller: _targetController,
               onClearTap: () {},
               readOnly: true,

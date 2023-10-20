@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translator_app/core/constant/styles.dart';
 
 class AppTheme {
   static ThemeData darkTheme = ThemeData(
@@ -17,6 +18,12 @@ class AppTheme {
       outline: Color(0XFF434446),
       error: Colors.red,
       onError: Colors.white,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: borderRadiusDefault),
+        padding: const EdgeInsets.all(paddingDefault),
+      ),
     ),
   );
 
