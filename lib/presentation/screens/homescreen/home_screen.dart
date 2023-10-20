@@ -40,11 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorScheme.background,
-      ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) => setState(() => _currentIndex = value),
