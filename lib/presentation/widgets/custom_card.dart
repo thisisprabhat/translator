@@ -7,6 +7,7 @@ class CustomCard extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Widget child;
   final bool hasOutline;
+  final Color? backgroundColor;
   final void Function()? onTap;
 
   const CustomCard({
@@ -16,6 +17,7 @@ class CustomCard extends StatelessWidget {
     this.borderRadius,
     this.hasOutline = false,
     this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -26,7 +28,7 @@ class CustomCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: colorScheme.surface,
+          color: backgroundColor ?? colorScheme.surface,
           borderRadius: borderRadius ?? borderRadiusDefault,
           border: !hasOutline
               ? null

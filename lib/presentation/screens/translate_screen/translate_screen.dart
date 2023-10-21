@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/data/models/language.dart';
 import '/core/constant/styles.dart';
 import '/presentation/screens/translate_screen/components/language_selector.dart';
 import '/presentation/widgets/translator_text_box.dart';
@@ -40,10 +41,14 @@ class _TranslateScreenState extends State<TranslateScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                   child: LanguageSelector(
-                    language: 'English',
-                    languageCode: 'en',
+                    language: Language(
+                      code: 'en',
+                      name: "English",
+                      nativeName: "English",
+                    ),
+                    translateTo: false,
                   ),
                 ),
                 IconButton(
@@ -55,10 +60,14 @@ class _TranslateScreenState extends State<TranslateScreen> {
                   visualDensity:
                       const VisualDensity(horizontal: -4, vertical: -2),
                 ),
-                const Expanded(
+                Expanded(
                   child: LanguageSelector(
-                    language: "German",
-                    languageCode: 'ge',
+                    language: Language(
+                      code: 'hi',
+                      name: "Hindi",
+                      nativeName: "English",
+                    ),
+                    translateTo: true,
                   ),
                 )
               ],
