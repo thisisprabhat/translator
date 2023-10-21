@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '/presentation/widgets/all_languages_widget.dart';
+import 'all_languages_widget.dart';
 import '/core/constant/styles.dart';
 import '/data/models/language.dart';
 import '/presentation/widgets/custom_card.dart';
-import '/presentation/widgets/language_code_circle.dart';
+import 'language_code_circle.dart';
 
 class LanguageSelector extends StatelessWidget {
   const LanguageSelector({
@@ -17,7 +17,7 @@ class LanguageSelector extends StatelessWidget {
   final Language language;
   final bool translateTo;
 
-  _showBottomSheet(context) {
+  _showBottomSheet(context) async {
     showBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -36,7 +36,6 @@ class LanguageSelector extends StatelessWidget {
             },
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-              // blendMode: BlendMode.clear,
               child: Container(
                 color: Colors.transparent,
                 height: double.maxFinite,

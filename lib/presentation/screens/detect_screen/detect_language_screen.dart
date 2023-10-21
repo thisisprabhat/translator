@@ -38,7 +38,9 @@ class DetectScreen extends StatelessWidget {
                     hintText: 'Enter text to detect it\'s language ...',
                     controller: TextEditingController(),
                     onClearTap: () {},
-                    onChanged: (val) {},
+                    onChanged: (val) {
+                      print(val);
+                    },
                   ),
                   const SizedBox(height: paddingDefault),
                   const DetectedLanguageCard(

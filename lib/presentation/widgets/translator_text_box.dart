@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '/core/constant/styles.dart';
 import '/presentation/widgets/custom_card.dart';
 
-class TranslatorTextBox extends StatelessWidget {
+class TranslatorTextBox extends StatefulWidget {
   const TranslatorTextBox({
     super.key,
     required this.title,
@@ -28,6 +28,11 @@ class TranslatorTextBox extends StatelessWidget {
   final void Function(String)? onChanged;
 
   @override
+  State<TranslatorTextBox> createState() => _TranslatorTextBoxState();
+}
+
+class _TranslatorTextBoxState extends State<TranslatorTextBox> {
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
@@ -37,9 +42,9 @@ class TranslatorTextBox extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Text(title),
+              Text(widget.title),
               Text(
-                title2 ?? "",
+                widget.title2 ?? "",
                 style: TextStyle(
                   color: colorScheme.onBackground,
                 ),
@@ -53,13 +58,16 @@ class TranslatorTextBox extends StatelessWidget {
           child: Column(
             children: [
               TextField(
-                controller: controller,
-                maxLength: maxLength ?? 2300,
-                maxLines: maxLines ?? 5,
-                onChanged: onChanged,
-                readOnly: readOnly,
+                controller: widget.controller,
+                maxLength: widget.maxLength ?? 2300,
+                maxLines: widget.maxLines ?? 5,
+                onChanged: (val) {
+                  widget.onChanged;
+                  setState(() => widget.controller.text);
+                },
+                readOnly: widget.readOnly,
                 decoration: InputDecoration(
-                  hintText: hintText ?? 'Enter your text here',
+                  hintText: widget.hintText ?? 'Enter your text here',
                   hintStyle: const TextStyle(fontWeight: FontWeight.w400),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: colorScheme.outline),
@@ -70,7 +78,8 @@ class TranslatorTextBox extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${controller.text.length}/${maxLength ?? 2300}"),
+                  Text(
+                      "${widget.controller.text.length}/${widget.maxLength ?? 2300}"),
                   TextButton(
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
@@ -78,7 +87,7 @@ class TranslatorTextBox extends StatelessWidget {
                         horizontal: 2,
                       ),
                     ),
-                    onPressed: onClearTap,
+                    onPressed: widget.onClearTap,
                     child: const Text(
                       "Clear",
                     ),
