@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constant/styles.dart';
-import '../../../widgets/custom_card.dart';
+import '/core/constant/styles.dart';
+import '/presentation/widgets/custom_card.dart';
 
 class DetectedLanguageCard extends StatelessWidget {
   const DetectedLanguageCard({

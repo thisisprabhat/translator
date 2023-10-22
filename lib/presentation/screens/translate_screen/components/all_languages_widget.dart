@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:translator_app/core/utils/colored_log.dart';
-import 'package:translator_app/domain/bloc/languages_bloc/language_bloc.dart';
 
 import '/data/models/language.dart';
 import '/core/constant/styles.dart';
+import '/core/utils/colored_log.dart';
+import '/domain/bloc/languages_bloc/language_bloc.dart';
 import '/presentation/widgets/custom_card.dart';
 import 'languages_card.dart';
 

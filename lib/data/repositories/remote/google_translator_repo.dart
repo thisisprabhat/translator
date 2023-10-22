@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:translator_app/data/repositories/local/hive_repo.dart';
 
 import '/core/utils/colored_log.dart';
 import '/core/constant/api_key.dart';
@@ -10,6 +9,7 @@ import '/core/constant/urls.dart';
 import '/data/models/detection.dart';
 import '/data/models/language.dart';
 import '/data/models/translation.dart';
+import '/data/repositories/local/hive_repo.dart';
 import '/data/repositories/remote/translator_repo_interface.dart';
 
 class GoogleTranslatorRepo implements TranslatorRepo {
@@ -18,7 +18,7 @@ class GoogleTranslatorRepo implements TranslatorRepo {
   final _headers = {
     'content-type': 'application/x-www-form-urlencoded',
     'Accept-Encoding': 'application/gzip',
-    'X-RapidAPI-Key': api_key,
+    'X-RapidAPI-Key': apiKey,
     'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com'
   };
 
@@ -71,7 +71,7 @@ class GoogleTranslatorRepo implements TranslatorRepo {
       'source': translation.source.toString(),
       'target': translation.target.toString(),
     };
-
+    ColoredLog.green(payload, name: 'Payload');
     try {
       final dio = Dio();
       Response response = await dio.post(
@@ -91,7 +91,6 @@ class GoogleTranslatorRepo implements TranslatorRepo {
     } catch (e) {
       ColoredLog.red(e, name: 'translateText Error');
     }
-    // throw Error();
     return Translation();
   }
 
@@ -116,7 +115,7 @@ class GoogleTranslatorRepo implements TranslatorRepo {
         Detection val = Detection.fromJson(response.data);
         val.text = detectionText;
         ColoredLog.yellow(val, name: 'Detection');
-        localRepo.saveDetection(val);
+        await localRepo.saveDetection(val);
         return val;
       } else {
         ColoredLog.red(response.data, name: response.statusCode.toString());

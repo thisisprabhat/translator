@@ -3,9 +3,13 @@ part of 'translate_bloc.dart';
 abstract class TranslateEvent {}
 
 class TranslateTextChangeEvent extends TranslateEvent {
-  final String text;
+  final Translation translation;
 
-  TranslateTextChangeEvent({required this.text});
+  TranslateTextChangeEvent({required this.translation});
 }
 
 class TranslateScreenClearButtonEvent extends TranslateEvent {}
+
+class TranslationLoadedEvent extends TranslateEvent {
+  TranslationLoadedEvent();
+}

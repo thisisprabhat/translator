@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '/core/constant/styles.dart';
 import '/presentation/widgets/translator_text_box.dart';
 import '/domain/bloc/detect_bloc/detect_bloc.dart';
+import '/presentation/widgets/top_action_buttons.dart';
 import '/presentation/screens/detect_screen/components/detected_language_card.dart';
 
 class DetectScreen extends StatefulWidget {
@@ -24,16 +25,15 @@ class _DetectScreenState extends State<DetectScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
-            top: paddingDefault * 3,
             left: paddingDefault,
             right: paddingDefault,
             bottom: paddingDefault,
           ),
           child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              ListView(
                 children: [
+                  const TopActionButtons(isTranslateScreen: false),
                   Text(
                     "Detect Languages",
                     style: textTheme.titleLarge

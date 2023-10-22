@@ -15,10 +15,14 @@ class HiveRepo implements LocalRepo {
   @override
   Future<void> initLocalDb() async {
     await Hive.initFlutter();
+    Hive
+      ..registerAdapter(TranslationAdapter())
+      ..registerAdapter(DetectionAdapter());
+
     try {
       await Hive.openBox(configBox);
-      await Hive.openBox(detectionBox);
-      await Hive.openBox(translationBox);
+      await Hive.openBox<Detection>(detectionBox);
+      await Hive.openBox<Translation>(translationBox);
     } catch (e) {
       ColoredLog.red(e, name: "Init Hive Error");
     }
@@ -63,8 +67,9 @@ class HiveRepo implements LocalRepo {
   @override
   Future<void> saveTranslation(Translation translation) async {
     try {
-      var box = Hive.box(translationBox);
+      var box = Hive.box<Translation>(translationBox);
       box.add(translation);
+      ColoredLog.green(translation, name: "Translation Saved");
     } catch (e) {
       ColoredLog.red(e, name: 'SaveTranslation Error');
     }
@@ -74,28 +79,27 @@ class HiveRepo implements LocalRepo {
   Future<List<Translation>> getTranslationHistory() async {
     List<Translation> translationHistory = [];
     try {
-      var box = Hive.box(translationBox);
+      var box = Hive.box<Translation>(translationBox);
+      translationHistory = box.values.toList();
 
-      box.keys.map((key) async {
-        translationHistory.clear();
-        var value = await box.get(key);
-        if (value is Translation) {
-          translationHistory.add(value);
-        }
-      });
-
+      ColoredLog.green('Length ${translationHistory.length}',
+          name: 'Getting Translation History');
+      if (translationHistory.isEmpty) {
+        throw Error();
+      }
       return translationHistory;
     } catch (e) {
       ColoredLog(e, name: 'getTranslationHistory Error');
+      rethrow;
     }
-    return translationHistory;
   }
 
   @override
   Future<void> saveDetection(Detection detection) async {
     try {
-      var box = Hive.box(detectionBox);
+      var box = Hive.box<Detection>(detectionBox);
       box.add(detection);
+      ColoredLog.green(detection, name: 'Detection Saved');
     } catch (e) {
       ColoredLog.red(e, name: 'SaveDectaction Error');
     }
@@ -105,21 +109,19 @@ class HiveRepo implements LocalRepo {
   Future<List<Detection>> getDetectionHistory() async {
     List<Detection> detectionHistory = [];
     try {
-      var box = Hive.box(detectionBox);
+      var box = Hive.box<Detection>(detectionBox);
 
-      box.keys.map((key) async {
-        detectionHistory.clear();
-        var value = await box.get(key);
-        if (value is Detection) {
-          detectionHistory.add(value);
-        }
-      });
-
+      detectionHistory = box.values.toList();
+      ColoredLog.green('Length ${detectionHistory.length}',
+          name: 'Getting detection History');
+      if (detectionHistory.isEmpty) {
+        throw Error();
+      }
       return detectionHistory;
     } catch (e) {
       ColoredLog(e, name: 'getDetectionHistory Error');
+      rethrow;
     }
-    return detectionHistory;
   }
 
   //!Singleton

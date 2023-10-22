@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '/presentation/screens/history/history_screen.dart';
-import 'theme_dialog.dart';
+import '/presentation/screens/history/detection_history_screen.dart';
+import '/presentation/screens/history/translation_history_screen.dart';
+import '/presentation/screens/translate_screen/components/theme_dialog.dart';
 
-class TranslateTopActionButtons extends StatelessWidget {
-  const TranslateTopActionButtons({
+class TopActionButtons extends StatelessWidget {
+  const TopActionButtons({
     super.key,
+    this.isTranslateScreen = true,
   });
-
+  final bool isTranslateScreen;
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -27,8 +29,14 @@ class TranslateTopActionButtons extends StatelessWidget {
         ),
         IconButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const HistoryScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => isTranslateScreen
+                    ? const TranslationHistoryScreen()
+                    : const DetectionHistoryScreen(),
+              ),
+            );
           },
           tooltip: 'history',
           icon: const Icon(Icons.history),

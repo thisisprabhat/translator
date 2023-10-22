@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:translator_app/data/repositories/remote/google_translator_repo.dart';
 
+import '/core/utils/colored_log.dart';
 import '/data/models/translation.dart';
+import '/data/repositories/local/hive_repo.dart';
+import '/data/repositories/remote/google_translator_repo.dart';
 
 part 'translate_event.dart';
 part 'translate_state.dart';
@@ -16,14 +18,16 @@ class TranslateBloc extends Bloc<TranslateEvent, TranslateState> {
   TranslateBloc() : super(TranslateInitialState()) {
     on<TranslateTextChangeEvent>(_translateTextChangeEvent);
     on<TranslateScreenClearButtonEvent>(_translateScreenClearButtonEvent);
+    on<TranslationLoadedEvent>(_translationLoadedEvent);
   }
 
   FutureOr<void> _translateTextChangeEvent(
       TranslateTextChangeEvent event, Emitter<TranslateState> emit) async {
-    translation.text = event.text;
+    translation = event.translation;
 
-    if (event.text.isEmpty) {
+    if (event.translation.text!.isEmpty) {
       emit(TranslateScreenClearButtonState());
+      return;
     } else {
       emit(TranslateLoadingState());
     }
@@ -33,11 +37,15 @@ class TranslateBloc extends Bloc<TranslateEvent, TranslateState> {
     }
 
     _timer = Timer(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 1500),
       () async {
         try {
-          translation = await repo.translateText(translation);
-          emit(TranslateLoadedState(translation: translation));
+          ColoredLog.red('Triggered');
+          final tempTranslation = await repo.translateText(translation);
+          translation.translatedText = tempTranslation.translatedText;
+          final localRepo = HiveRepo();
+          localRepo.saveTranslation(translation);
+          add(TranslationLoadedEvent());
         } catch (e) {
           emit(TranslateErrorState());
         }
@@ -48,5 +56,10 @@ class TranslateBloc extends Bloc<TranslateEvent, TranslateState> {
   _translateScreenClearButtonEvent(
       TranslateScreenClearButtonEvent event, Emitter<TranslateState> emit) {
     emit(TranslateScreenClearButtonState());
+  }
+
+  FutureOr<void> _translationLoadedEvent(
+      TranslationLoadedEvent event, Emitter<TranslateState> emit) {
+    emit(TranslateLoadedState(translation: translation));
   }
 }

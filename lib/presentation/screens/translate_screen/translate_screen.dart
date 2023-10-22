@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/core/constant/styles.dart';
+import '/data/models/translation.dart';
 import '/presentation/screens/translate_screen/components/language_selector.dart';
-import '/presentation/screens/translate_screen/components/translate_top_action_buttons.dart';
+import '/presentation/widgets/top_action_buttons.dart';
 import '/domain/bloc/languages_bloc/language_bloc.dart';
 import '/domain/bloc/translate_bloc/translate_bloc.dart';
 import '/presentation/widgets/translator_text_box.dart';
@@ -18,6 +19,7 @@ class TranslateScreen extends StatefulWidget {
 class _TranslateScreenState extends State<TranslateScreen> {
   final TextEditingController _sourceController = TextEditingController();
   final TextEditingController _targetController = TextEditingController();
+  Translation translation = Translation();
 
   @override
   void initState() {
@@ -36,6 +38,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final source = context.watch<LanguagesBloc>().sourceLanguage;
+    final target = context.watch<LanguagesBloc>().targetLanguage;
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -44,7 +48,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             right: paddingDefault,
           ),
           children: [
-            const TranslateTopActionButtons(),
+            const TopActionButtons(),
             Text(
               "Text Translation",
               style: textTheme.titleLarge
@@ -78,14 +82,20 @@ class _TranslateScreenState extends State<TranslateScreen> {
             const SizedBox(height: paddingDefault),
             TranslatorTextBox(
               title: "Translate from ",
-              title2: '(${context.watch<LanguagesBloc>().sourceLanguage.name})',
+              title2: '(${source.name})',
               hintText: 'Enter text to translate ...',
               controller: _sourceController,
               onClearTap: () => context.read<TranslateBloc>().add(
                     TranslateScreenClearButtonEvent(),
                   ),
-              onChanged: (val) => context.read<TranslateBloc>().add(
-                    TranslateTextChangeEvent(text: val),
+              onChanged: (text) => context.read<TranslateBloc>().add(
+                    TranslateTextChangeEvent(
+                      translation: Translation(
+                        text: text,
+                        source: source.code,
+                        target: target.code,
+                      ),
+                    ),
                   ),
             ),
             const SizedBox(height: paddingDefault / 2),
@@ -99,8 +109,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 }
                 return TranslatorTextBox(
                   title: "Translate to ",
-                  title2:
-                      '(${context.watch<LanguagesBloc>().targetLanguage.name})',
+                  title2: '(${target.name})',
                   hintText: loaderHint,
                   controller: _targetController,
                   onClearTap: () => context
@@ -113,13 +122,15 @@ class _TranslateScreenState extends State<TranslateScreen> {
                 if (state is TranslateScreenClearButtonState) {
                   setState(() {
                     _sourceController.clear();
-                    _sourceController.clear();
+                    _targetController.clear();
                   });
                 } else if (state is TranslateLoadedState) {
-                  setState(() {
-                    _targetController.text =
-                        state.translation.translatedText ?? "";
-                  });
+                  setState(
+                    () {
+                      _targetController.text =
+                          state.translation.translatedText ?? "";
+                    },
+                  );
                 }
               },
             ),
