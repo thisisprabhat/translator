@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '/presentation/screens/detect_screen/detect_language_screen.dart';
-import '/presentation/screens/history/history_screen.dart';
 import '/presentation/screens/translate_screen/translate_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = const [
     TranslateScreen(),
     DetectScreen(),
-    HistoryScreen(),
   ];
 
   final List<BottomNavigationBarItem> _bottomNavigationBarItems = const [
@@ -32,10 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: Icon(Icons.language),
       label: "Detect language",
     ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.history),
-      label: "History",
-    )
   ];
 
   @override

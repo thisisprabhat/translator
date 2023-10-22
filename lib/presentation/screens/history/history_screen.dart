@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '/core/constant/styles.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({super.key});
+  const HistoryScreen({super.key, this.isTranslateScreen = true});
+  final bool isTranslateScreen;
 
   @override
   Widget build(BuildContext context) {

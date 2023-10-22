@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:translator_app/presentation/screens/translate_screen/components/theme_dialog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/data/models/language.dart';
 import '/core/constant/styles.dart';
 import '/presentation/screens/translate_screen/components/language_selector.dart';
+import '/presentation/screens/translate_screen/components/translate_top_action_buttons.dart';
+import '/domain/bloc/languages_bloc/language_bloc.dart';
+import '/domain/bloc/translate_bloc/translate_bloc.dart';
 import '/presentation/widgets/translator_text_box.dart';
 
 class TranslateScreen extends StatefulWidget {
@@ -18,6 +20,19 @@ class _TranslateScreenState extends State<TranslateScreen> {
   final TextEditingController _targetController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    //InitState implementation
+  }
+
+  @override
+  void dispose() {
+    _sourceController.dispose();
+    _targetController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
@@ -29,22 +44,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
             right: paddingDefault,
           ),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const ThemeDialog()),
-                  icon: Icon(
-                    colorScheme.brightness == Brightness.dark
-                        ? Icons.sunny
-                        : Icons.dark_mode,
-                    color: colorScheme.secondary,
-                  ),
-                ),
-              ],
-            ),
+            const TranslateTopActionButtons(),
             Text(
               "Text Translation",
               style: textTheme.titleLarge
@@ -57,18 +57,12 @@ class _TranslateScreenState extends State<TranslateScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  child: LanguageSelector(
-                    language: Language(
-                      code: 'en',
-                      name: "English",
-                      nativeName: "English",
-                    ),
-                    translateTo: false,
-                  ),
+                const Expanded(
+                  child: LanguageSelector(translateTo: false),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () =>
+                      context.read<LanguagesBloc>().add(LanguageSwapEvent()),
                   icon: Icon(
                     Icons.swap_horiz_rounded,
                     color: colorScheme.outline,
@@ -76,36 +70,58 @@ class _TranslateScreenState extends State<TranslateScreen> {
                   visualDensity:
                       const VisualDensity(horizontal: -4, vertical: -2),
                 ),
-                Expanded(
-                  child: LanguageSelector(
-                    language: Language(
-                      code: 'hi',
-                      name: "Hindi",
-                      nativeName: "English",
-                    ),
-                    translateTo: true,
-                  ),
+                const Expanded(
+                  child: LanguageSelector(translateTo: true),
                 )
               ],
             ),
             const SizedBox(height: paddingDefault),
             TranslatorTextBox(
               title: "Translate from ",
-              title2: '(English)',
+              title2: '(${context.watch<LanguagesBloc>().sourceLanguage.name})',
               hintText: 'Enter text to translate ...',
               controller: _sourceController,
-              onClearTap: () {},
-              onChanged: (val) {},
+              onClearTap: () => context.read<TranslateBloc>().add(
+                    TranslateScreenClearButtonEvent(),
+                  ),
+              onChanged: (val) => context.read<TranslateBloc>().add(
+                    TranslateTextChangeEvent(text: val),
+                  ),
             ),
             const SizedBox(height: paddingDefault / 2),
-            TranslatorTextBox(
-              title: "Translate to ",
-              title2: '(Germany)',
-              hintText: 'your translated text will appear here.',
-              controller: _targetController,
-              onClearTap: () {},
-              readOnly: true,
-              onChanged: (val) {},
+            BlocConsumer<TranslateBloc, TranslateState>(
+              builder: (context, state) {
+                String loaderHint = 'your translated text will appear here.';
+                if (state is TranslateLoadingState) {
+                  loaderHint = 'Translating...';
+                } else if (state is TranslateErrorState) {
+                  loaderHint = 'Something went Wrong';
+                }
+                return TranslatorTextBox(
+                  title: "Translate to ",
+                  title2:
+                      '(${context.watch<LanguagesBloc>().targetLanguage.name})',
+                  hintText: loaderHint,
+                  controller: _targetController,
+                  onClearTap: () => context
+                      .read<TranslateBloc>()
+                      .add(TranslateScreenClearButtonEvent()),
+                  readOnly: true,
+                );
+              },
+              listener: (context, state) {
+                if (state is TranslateScreenClearButtonState) {
+                  setState(() {
+                    _sourceController.clear();
+                    _sourceController.clear();
+                  });
+                } else if (state is TranslateLoadedState) {
+                  setState(() {
+                    _targetController.text =
+                        state.translation.translatedText ?? "";
+                  });
+                }
+              },
             ),
           ],
         ),

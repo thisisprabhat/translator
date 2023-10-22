@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:translator_app/data/repositories/local/hive_repo.dart';
-import 'package:translator_app/data/repositories/local/local_repo_interface.dart';
+
+import '/core/utils/colored_log.dart';
+import '/data/repositories/local/hive_repo.dart';
+import '/data/repositories/local/local_repo_interface.dart';
 
 part 'config_event.dart';
 part 'config_state.dart';
@@ -14,7 +16,9 @@ class ConfigBloc extends Bloc<ConfigEvent, ConfigState> {
   }
   _configInitialThemeEvent(
       ConfigInitialThemeEvent event, Emitter<ConfigState> emit) async {
+    ColoredLog.yellow('ConfigInitialThemeEvent');
     final themeMode = await _repo.getThemeMode();
+    ColoredLog.green(themeMode, name: 'Get ThemeMode form local DB');
     emit(ConfigLoadedState(themeMode: themeMode));
   }
 

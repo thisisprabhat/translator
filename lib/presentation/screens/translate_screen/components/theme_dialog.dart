@@ -2,8 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:translator_app/core/constant/styles.dart';
-import 'package:translator_app/domain/bloc/config_bloc/config_bloc.dart';
+
+import '/core/constant/styles.dart';
+import '/domain/bloc/config_bloc/config_bloc.dart';
 
 class ThemeDialog extends StatelessWidget {
   const ThemeDialog({super.key});
@@ -16,42 +17,40 @@ class ThemeDialog extends StatelessWidget {
       },
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-        child: SizedBox(
+        child: const SizedBox(
           height: double.maxFinite,
           width: double.maxFinite,
           child: Center(
             child: SizedBox(
-              child: Container(
-                height: 200,
-                width: 300,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ThemeBox(
-                            boxThemeMode: ThemeMode.dark,
-                            topLeft: true,
-                          ),
+              height: 200,
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ThemeBox(
+                          boxThemeMode: ThemeMode.dark,
+                          topLeft: true,
                         ),
-                        const SizedBox(width: paddingDefault / 5),
-                        Expanded(
-                          child: ThemeBox(
-                            boxThemeMode: ThemeMode.light,
-                            topRight: true,
-                          ),
+                      ),
+                      SizedBox(width: paddingDefault / 5),
+                      Expanded(
+                        child: ThemeBox(
+                          boxThemeMode: ThemeMode.light,
+                          topRight: true,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: paddingDefault / 5),
-                    ThemeBox(
-                      boxThemeMode: ThemeMode.system,
-                      bottomLeft: true,
-                      bottomRight: true,
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: paddingDefault / 5),
+                  ThemeBox(
+                    boxThemeMode: ThemeMode.system,
+                    bottomLeft: true,
+                    bottomRight: true,
+                  ),
+                ],
               ),
             ),
           ),
@@ -113,7 +112,7 @@ class ThemeBox extends StatelessWidget {
                   color: state.themeMode == boxThemeMode
                       ? colorScheme.onSecondary
                       : colorScheme.onSurface,
-                  size: 40,
+                  size: 30,
                 ),
                 Text(
                   boxThemeMode == ThemeMode.dark
@@ -122,7 +121,7 @@ class ThemeBox extends StatelessWidget {
                           ? "Light Mode"
                           : "System",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: state.themeMode == boxThemeMode
                         ? colorScheme.onSecondary

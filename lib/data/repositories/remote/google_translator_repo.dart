@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:translator_app/data/repositories/local/hive_repo.dart';
 
 import '/core/utils/colored_log.dart';
 import '/core/constant/api_key.dart';
@@ -12,6 +13,8 @@ import '/data/models/translation.dart';
 import '/data/repositories/remote/translator_repo_interface.dart';
 
 class GoogleTranslatorRepo implements TranslatorRepo {
+  final localRepo = HiveRepo();
+
   final _headers = {
     'content-type': 'application/x-www-form-urlencoded',
     'Accept-Encoding': 'application/gzip',
@@ -113,7 +116,7 @@ class GoogleTranslatorRepo implements TranslatorRepo {
         Detection val = Detection.fromJson(response.data);
         val.text = detectionText;
         ColoredLog.yellow(val, name: 'Detection');
-
+        localRepo.saveDetection(val);
         return val;
       } else {
         ColoredLog.red(response.data, name: response.statusCode.toString());

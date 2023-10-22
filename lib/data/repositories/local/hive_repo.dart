@@ -15,31 +15,41 @@ class HiveRepo implements LocalRepo {
   @override
   Future<void> initLocalDb() async {
     await Hive.initFlutter();
-    await Hive.openBox(configBox);
-    await Hive.openBox(detectionBox);
-    await Hive.openBox(translationBox);
+    try {
+      await Hive.openBox(configBox);
+      await Hive.openBox(detectionBox);
+      await Hive.openBox(translationBox);
+    } catch (e) {
+      ColoredLog.red(e, name: "Init Hive Error");
+    }
   }
 
   @override
   Future<void> setThemeMode(ThemeMode themeMode) async {
-    var box = Hive.box(configBox);
-    String theme;
+    try {
+      var box = Hive.box(configBox);
+      String theme;
 
-    if (themeMode == ThemeMode.light) {
-      theme = 'light';
-    } else if (themeMode == ThemeMode.dark) {
-      theme = 'dark';
-    } else {
-      theme = 'system';
+      if (themeMode == ThemeMode.light) {
+        theme = 'light';
+      } else if (themeMode == ThemeMode.dark) {
+        theme = 'dark';
+      } else {
+        theme = 'system';
+      }
+      ColoredLog.yellow(theme, name: 'setTheme');
+
+      await box.put('theme', theme);
+    } catch (e) {
+      ColoredLog.red(e, name: 'SetThemeMode');
     }
-
-    await box.put('theme', theme);
   }
 
   @override
   Future<ThemeMode> getThemeMode() async {
     var box = Hive.box(configBox);
     String? theme = await box.get('theme');
+    ColoredLog(theme, name: 'getTheme');
 
     if (theme == 'light') {
       return ThemeMode.light;

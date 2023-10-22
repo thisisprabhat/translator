@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:translator_app/core/utils/colored_log.dart';
+import 'package:translator_app/domain/bloc/languages_bloc/language_bloc.dart';
 
 import '/data/models/language.dart';
 import '/core/constant/styles.dart';
@@ -40,7 +43,13 @@ class AllLanguages extends StatelessWidget {
             ),
           ),
           TextField(
+            onChanged: (val) {
+              context
+                  .read<LanguagesBloc>()
+                  .add(LanguageSearchEvent(searchText: val));
+            },
             decoration: InputDecoration(
+              hintText: "Search for languages..",
               focusColor: colorScheme.outline,
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: colorScheme.outline),
@@ -64,19 +73,50 @@ class AllLanguages extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              separatorBuilder: (context, index) =>
-                  const SizedBox(height: paddingDefault / 3),
-              itemCount: 10,
-              itemBuilder: (context, index) => LanguageCard(
-                language: Language(
-                  code: 'en',
-                  name: "English",
-                  nativeName: "English",
-                ),
-              ),
+            child: BlocBuilder<LanguagesBloc, LanguagesState>(
+              builder: (context, state) {
+                ColoredLog.yellow(state);
+                if (state is LanguagesLoadedState) {
+                  return ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: paddingDefault / 3),
+                      itemCount: state.languages.length,
+                      itemBuilder: (context, index) {
+                        final Language language = state.languages[index];
+                        bool isSelected = false;
+                        if (translateTo) {
+                          isSelected =
+                              language.code == state.targetLanguage.code;
+                        } else {
+                          {
+                            isSelected =
+                                language.code == state.sourceLanguage.code;
+                          }
+                        }
+                        return LanguageCard(
+                          onTap: () {
+                            context.read<LanguagesBloc>().add(
+                                  translateTo
+                                      ? LanguageSelectEvent(
+                                          targetLanguage: language)
+                                      : LanguageSelectEvent(
+                                          sourceLanguage: language,
+                                        ),
+                                );
+                            Navigator.pop(context);
+                          },
+                          language: language,
+                          isSelected: isSelected,
+                        );
+                      });
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
-          )
+          ),
         ],
       ),
     );

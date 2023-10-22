@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,7 +71,6 @@ class _DetectScreenState extends State<DetectScreen> {
                       }
                     },
                     listener: (context, state) {
-                      print(state);
                       if (state is DetectionErrorState) {
                       } else if (state is DetectionClearState) {
                         setState(() {
