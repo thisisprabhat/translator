@@ -36,7 +36,7 @@ class _TranslatorTextBoxState extends State<TranslatorTextBox> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -62,7 +62,9 @@ class _TranslatorTextBoxState extends State<TranslatorTextBox> {
                 maxLength: widget.maxLength ?? 2300,
                 maxLines: widget.maxLines ?? 5,
                 onChanged: (val) {
-                  widget.onChanged;
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(val);
+                  }
                   setState(() => widget.controller.text);
                 },
                 readOnly: widget.readOnly,

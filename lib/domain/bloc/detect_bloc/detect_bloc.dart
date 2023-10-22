@@ -8,8 +8,6 @@ part 'detect_event.dart';
 part 'detect_state.dart';
 
 class DetectBloc extends Bloc<DetectEvent, DetectState> {
-  Detection detection = Detection();
-
   DetectBloc() : super(DetectionInitialState()) {
     on<TextChangeDetectEvent>(_textChangeDetectEvent);
     on<DetectLanguageButtonPressEvent>(_detectLanguageButtonPressEvent);
@@ -18,7 +16,6 @@ class DetectBloc extends Bloc<DetectEvent, DetectState> {
 
   _textChangeDetectEvent(
       TextChangeDetectEvent event, Emitter<DetectState> emit) {
-    detection.text = event.text;
     emit(DetectionInitialState());
   }
 
@@ -27,7 +24,7 @@ class DetectBloc extends Bloc<DetectEvent, DetectState> {
     TranslatorRepo repo = GoogleTranslatorRepo();
     try {
       emit(DetectingState());
-      detection = await repo.detectTextLanguage(detection);
+      final detection = await repo.detectTextLanguage(event.text);
       emit(DetectedState(detection: detection));
     } catch (e) {
       emit(DetectionErrorState());

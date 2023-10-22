@@ -1,11 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/core/constant/styles.dart';
 import '/presentation/widgets/translator_text_box.dart';
+import '/domain/bloc/detect_bloc/detect_bloc.dart';
 import '/presentation/screens/detect_screen/components/detected_language_card.dart';
 
-class DetectScreen extends StatelessWidget {
+class DetectScreen extends StatefulWidget {
   const DetectScreen({super.key});
+
+  @override
+  State<DetectScreen> createState() => _DetectScreenState();
+}
+
+class _DetectScreenState extends State<DetectScreen> {
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +33,8 @@ class DetectScreen extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              ListView(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Detect Languages",
@@ -36,19 +48,40 @@ class DetectScreen extends StatelessWidget {
                   TranslatorTextBox(
                     title: "Detect text language",
                     hintText: 'Enter text to detect it\'s language ...',
-                    controller: TextEditingController(),
-                    onClearTap: () {},
-                    onChanged: (val) {
-                      print(val);
-                    },
+                    controller: _controller,
+                    onClearTap: () => context
+                        .read<DetectBloc>()
+                        .add(ClearButttonPressDetectEvent()),
+                    onChanged: (val) => BlocProvider.of<DetectBloc>(context)
+                        .add(TextChangeDetectEvent()),
                   ),
                   const SizedBox(height: paddingDefault),
-                  const DetectedLanguageCard(
-                    language: 'English',
-                    confidencePercentage: 54,
-                    reliable: true,
+                  BlocConsumer<DetectBloc, DetectState>(
+                    builder: (context, state) {
+                      if (state is DetectingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (state is DetectedState) {
+                        return DetectedLanguageCard(
+                          language: state.detection?.language,
+                          confidencePercentage: state.detection?.confidence,
+                          reliable: state.detection?.isReliable ?? true,
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                    listener: (context, state) {
+                      print(state);
+                      if (state is DetectionErrorState) {
+                      } else if (state is DetectionClearState) {
+                        setState(() {
+                          _controller.clear();
+                        });
+                      }
+                    },
                   ),
-                  const Spacer(),
                 ],
               ),
               Align(
@@ -56,7 +89,9 @@ class DetectScreen extends StatelessWidget {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minWidth: double.maxFinite),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => context
+                        .read<DetectBloc>()
+                        .add(DetectLanguageButtonPressEvent(_controller.text)),
                     child: const Text("Detect"),
                   ),
                 ),

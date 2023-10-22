@@ -7,7 +7,7 @@ abstract interface class TranslatorRepo {
   Future<Translation> translateText(Translation translation);
 
   ///It detects the language of the given text
-  Future<Detection> detectTextLanguage(Detection detection);
+  Future<Detection> detectTextLanguage(String detection);
 
   ///It fetches all the available languages for translatioin
   Future<List<Language>> getAllAvailableLanguages();

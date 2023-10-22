@@ -93,11 +93,11 @@ class GoogleTranslatorRepo implements TranslatorRepo {
   }
 
   @override
-  Future<Detection> detectTextLanguage(Detection detection) async {
+  Future<Detection> detectTextLanguage(String detectionText) async {
     ColoredLog(UrlConstant.detectLanguageUrl, name: "URL");
     ColoredLog.yellow(_headers, name: 'Headers');
     Map<String, dynamic> payload = {
-      'q': detection.text.toString(),
+      'q': detectionText,
     };
     ColoredLog(payload, name: 'Payload');
 
@@ -111,8 +111,9 @@ class GoogleTranslatorRepo implements TranslatorRepo {
 
       if (response.statusCode == 200) {
         Detection val = Detection.fromJson(response.data);
-        val.text = detection.text;
+        val.text = detectionText;
         ColoredLog.yellow(val, name: 'Detection');
+
         return val;
       } else {
         ColoredLog.red(response.data, name: response.statusCode.toString());

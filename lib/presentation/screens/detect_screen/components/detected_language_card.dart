@@ -11,7 +11,7 @@ class DetectedLanguageCard extends StatelessWidget {
     this.reliable = false,
   });
   final bool reliable;
-  final double? confidencePercentage;
+  final num? confidencePercentage;
   final String? language;
 
   @override
