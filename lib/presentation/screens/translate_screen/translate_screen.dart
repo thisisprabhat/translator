@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translator_app/presentation/screens/translate_screen/components/theme_dialog.dart';
 
 import '/data/models/language.dart';
 import '/core/constant/styles.dart';
@@ -24,11 +25,26 @@ class _TranslateScreenState extends State<TranslateScreen> {
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.only(
-            top: paddingDefault * 3,
             left: paddingDefault,
             right: paddingDefault,
           ),
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => const ThemeDialog()),
+                  icon: Icon(
+                    colorScheme.brightness == Brightness.dark
+                        ? Icons.sunny
+                        : Icons.dark_mode,
+                    color: colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
             Text(
               "Text Translation",
               style: textTheme.titleLarge
@@ -79,9 +95,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
               hintText: 'Enter text to translate ...',
               controller: _sourceController,
               onClearTap: () {},
-              onChanged: (val) {
-                setState(() {});
-              },
+              onChanged: (val) {},
             ),
             const SizedBox(height: paddingDefault / 2),
             TranslatorTextBox(
@@ -91,9 +105,7 @@ class _TranslateScreenState extends State<TranslateScreen> {
               controller: _targetController,
               onClearTap: () {},
               readOnly: true,
-              onChanged: (val) {
-                setState(() {});
-              },
+              onChanged: (val) {},
             ),
           ],
         ),
