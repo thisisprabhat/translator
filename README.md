@@ -2,15 +2,15 @@
 
 A flutter translator app.
 
-## Getting Started
+## Project setup
+- To use this project get your api key from [rapid-api/google_translate](https://rapidapi.com/googlecloud/api/google-translate1/)
+- Make sure you have used the above link
+- Now after getting the api key, paste it in `lib/core/constants/api_key.dart.example`
+```
+const String apiKey = 'ENTER YOUR API KEY FROM [https://rapidapi.com/googlecloud/api/google-translate1]';
+```
+- Now rename the above file by removing the '.example' from it's extension
+`api_key.dart.example` to `api_key.dart`
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Congrats you have completed the setup now you can run the project.

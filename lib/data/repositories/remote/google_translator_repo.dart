@@ -58,6 +58,7 @@ class GoogleTranslatorRepo implements TranslatorRepo {
       }
     } catch (e) {
       ColoredLog.red(e, name: 'getAllAvailableLanguages Error');
+      rethrow;
     }
     return [];
   }
